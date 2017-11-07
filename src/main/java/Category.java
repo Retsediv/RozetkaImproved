@@ -7,15 +7,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Category extends PageParser {
-    ArrayList<Product> products = new ArrayList<>();
-
-    private int pagesCount;
-    private int currentPage;
+public class Category extends PaginatePageParser {
+    private ArrayList<Product> products = new ArrayList<>();
 
     public Category(String pageUrl) {
         super(pageUrl);
-        this.pagesCount = this.getNumberOfPages();
     }
 
     /**
@@ -26,6 +22,7 @@ public class Category extends PageParser {
      * Integer
      * @throws IOException
      */
+    @Override
     public int getNumberOfPages() {
         // get all pagination elements
         Elements paginationElement = this.doc.select(".paginator-catalog .paginator-catalog-l-i span");
@@ -44,17 +41,6 @@ public class Category extends PageParser {
         return currentPage;
     }
 
-    public void setCurrentPage(int currentPage) {
-        if(currentPage > this.pagesCount || currentPage < 0){
-            currentPage = 0;
-        }
-
-        String url = String.format(this.getPageUrl() + "/page=%s", currentPage);
-        Document page = Jsoup.parse(url);
-
-        this.currentPage = currentPage;
-    }
-
     /**
      * Get all products of category on all pages
      *
@@ -62,7 +48,7 @@ public class Category extends PageParser {
      */
     public ArrayList<Product> getAllProducts() {
         if(products.size() == 0) {
-            for (int i = 0; i < pagesCount; i++) {
+            for (int i = 0; i < 1; i++) {
                 products.addAll(this.getProductsOnPage(i + 1));
             }
         }
@@ -78,9 +64,7 @@ public class Category extends PageParser {
      * @return Array of HashMaps
      */
     public ArrayList<Product> getProductsOnPage(int pageNumber) {
-        if(this.currentPage != pageNumber) {
-            this.setCurrentPage(pageNumber);
-        }
+        this.setCurrentPage(pageNumber);
 
         ArrayList<Product> products = new ArrayList<>();
         Elements rawItems = this.doc.select(".g-i-tile-catalog");
@@ -88,13 +72,19 @@ public class Category extends PageParser {
         for (Element item : rawItems) {
             HashMap<String, String> shortDescription = new HashMap<>();
 
-            shortDescription.put("title", item.select(".g-i-tile-i-title a").text());
             shortDescription.put("link", item.select(".g-i-tile-i-title a").attr("href"));
+            if(shortDescription.get("link").equals(""))
+                continue;
+
+            shortDescription.put("title", item.select(".g-i-tile-i-title a").text());
             shortDescription.put("image", item.select(".g-i-tile-i-image img").attr("src"));
             shortDescription.put("reviews_count", item.select(".g-rating > a").attr("data-count"));
             shortDescription.put("reviews_rate", item.select(".g-rating a .g-rating-stars-i").attr("style"));
 
+            System.out.println(shortDescription.get("link"));
             products.add(new Product(shortDescription, shortDescription.get("link")));
+
+            System.out.println(products);
         }
 
         return products;

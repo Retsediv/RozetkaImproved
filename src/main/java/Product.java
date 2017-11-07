@@ -3,17 +3,20 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Product extends PageParser {
 
     private HashMap<String, String> shortInfo;
     private HashMap<String, String> fullInfo = new HashMap<>();
-
+    private ArrayList<ProductReview> reviews = new ArrayList<>();
+    private ProductReviewPage productReviewsPage;
 
     public Product(HashMap<String, String> shortInfo, String link){
         super(link);
         this.shortInfo = shortInfo;
+        this.productReviewsPage = new ProductReviewPage(link);
     }
 
     public HashMap<String, String> getShortInfo() {
@@ -24,7 +27,7 @@ public class Product extends PageParser {
         this.shortInfo = shortInfo;
     }
 
-    public HashMap<String, String> getProductCharacteristics() {
+    public HashMap<String, String> getFullInfo() {
         if(this.fullInfo.size() != 0){
             return this.fullInfo;
         }
@@ -54,4 +57,11 @@ public class Product extends PageParser {
         return characteristics;
     }
 
+    public ArrayList<ProductReview> getReviews() {
+        return reviews;
+    }
+
+    public ProductReviewPage getProductReviewsPage() {
+        return productReviewsPage;
+    }
 }

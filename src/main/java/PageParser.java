@@ -46,10 +46,13 @@ abstract public class PageParser {
      * @param pageUrl
      */
     public void setPageUrl(String pageUrl) {
+        System.out.println(pageUrl);
         try {
             this.doc = Jsoup.connect(pageUrl).get();
             this.pageUrl = pageUrl;
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
     }
