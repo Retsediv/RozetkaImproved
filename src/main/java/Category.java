@@ -70,21 +70,17 @@ public class Category extends PaginatePageParser {
         Elements rawItems = this.doc.select(".g-i-tile-catalog");
 
         for (Element item : rawItems) {
-            HashMap<String, String> shortDescription = new HashMap<>();
+            String link = item.select(".g-i-tile-i-title a").attr("href");
 
-            shortDescription.put("link", item.select(".g-i-tile-i-title a").attr("href"));
-            if(shortDescription.get("link").equals(""))
+            if(link.equals(""))
                 continue;
 
-            shortDescription.put("title", item.select(".g-i-tile-i-title a").text());
-            shortDescription.put("image", item.select(".g-i-tile-i-image img").attr("src"));
-            shortDescription.put("reviews_count", item.select(".g-rating > a").attr("data-count"));
-            shortDescription.put("reviews_rate", item.select(".g-rating a .g-rating-stars-i").attr("style"));
+            String title = item.select(".g-i-tile-i-title a").text();
+            String image = item.select(".g-i-tile-i-image img").attr("src");
+            String reviews_count = item.select(".g-rating > a").attr("data-count");
+            String reviews_rate = item.select(".g-rating a .g-rating-stars-i").attr("style");
 
-            System.out.println(shortDescription.get("link"));
-            products.add(new Product(shortDescription, shortDescription.get("link")));
-
-            System.out.println(products);
+            products.add(new Product(link, title, image, reviews_count, reviews_rate));
         }
 
         return products;

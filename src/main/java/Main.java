@@ -23,20 +23,20 @@ public class Main {
         System.out.println("Start writing to the file");
 
         for (Product product : products) {
-            System.out.println("Processing: " + product.getShortInfo().get("title"));
+            System.out.println("Processing: " + product.getTitle());
 
-            if (!product.getFullInfo().get("reviews_count").equals("") && Integer.parseInt(product.getFullInfo().get("reviews_count")) > maxReviewsCounter) {
-                maxReviewedProductName = product.getFullInfo().get("title");
+            if (!product.getReviewsCount().equals("") && Integer.parseInt(product.getReviewsCount()) > maxReviewsCounter) {
+                maxReviewedProductName = product.getTitle();
             }
 
             String filename = String.format("%s/%s.csv",
-                    path, product.getFullInfo().get("title").replace(" ", "-").replace("/", "-"));
+                    path, product.getTitle().replace(" ", "-").replace("/", "-"));
 
             FileWriter writer = null;
             try {
-                writer = new FileWriter(filename, true);  //True = Append to file, false =
+                writer = new FileWriter(filename, true);
 
-                writer.write(product.getFullInfo().get("title"));
+                writer.write(product.getTitle());
                 writer.write("\r\n\r\n\r\n");
                 // Write Characteristics
                 for (Map.Entry<String, String> entry : product.getFullInfo().entrySet()) {
@@ -68,15 +68,15 @@ public class Main {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+        }
 
             System.out.println("Parsing is successfully done!");
 
             // research
-            filename = String.format("%s/%s.txt", path, "result");
+            String filename = String.format("%s/%s.txt", path, "result");
 
             try {
-                writer = new FileWriter(filename, false);
+                FileWriter writer = new FileWriter(filename, false);
                 writer.write("The most reviewed product: " + maxReviewedProductName);
                 writer.close();
 
@@ -85,7 +85,6 @@ public class Main {
             }
 
             System.out.println("The most reviewed product: " + maxReviewedProductName);
-        }
 
     }
 }

@@ -46,8 +46,9 @@ public class ProductReviewPage extends PaginatePageParser {
 
         for (Element rawReview: rawReviews){
             HashMap<String, String> reviewDetails = new HashMap<>();
-            reviewDetails.put("author", rawReview.select(".pp-review-author .pp-review-author-name").text());
-            reviewDetails.put("status", rawReview.select(".pp-review-author .pp-review-buyer-note").text());
+
+            String author = rawReview.select(".pp-review-author .pp-review-author-name").text();
+            String status = rawReview.select(".pp-review-author .pp-review-buyer-note").text();
             reviewDetails.put("date", rawReview.select(".pp-review-date .pp-review-date-text").text());
             reviewDetails.put("rate", rawReview.select(".g-rating-stars-i").attr("content"));
             reviewDetails.put("full_review", rawReview.select(".pp-review-text > div:first-child").text());
@@ -55,7 +56,7 @@ public class ProductReviewPage extends PaginatePageParser {
             reviewDetails.put("pros", rawReview.select(".pp-review-text > div:nth-child(2)").text());
             reviewDetails.put("cons", rawReview.select(".pp-review-text > div:nth-child(3)").text());
 
-            reviewsOnPage.add(new ProductReview(reviewDetails));
+            reviewsOnPage.add(new ProductReview(author, status, reviewDetails));
         }
 
         return reviewsOnPage;
